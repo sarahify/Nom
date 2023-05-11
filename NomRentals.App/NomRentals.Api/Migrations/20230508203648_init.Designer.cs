@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NomRentals.Api.Data;
 
@@ -10,9 +11,10 @@ using NomRentals.Api.Data;
 namespace NomRentals.Api.Migrations
 {
     [DbContext(typeof(CustomerApiDbContext))]
-    partial class CustomerApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230508203648_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.14");
@@ -41,22 +43,6 @@ namespace NomRentals.Api.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "e760154f-b9c0-4366-af8c-47359524e7ab",
-                            ConcurrencyStamp = "1",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        },
-                        new
-                        {
-                            Id = "02aa13be-6ef9-43e0-9b23-900cf99f2c04",
-                            ConcurrencyStamp = "2",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

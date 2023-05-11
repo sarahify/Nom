@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NomRentals.Api.Data;
 
 namespace NomRentals.Api.Controllers
 {
@@ -12,15 +13,23 @@ namespace NomRentals.Api.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly CustomerApiDbContext _dBContext;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, CustomerApiDbContext customerApiDbContext)
         {
             _logger = logger;
+            _dBContext = customerApiDbContext;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogInformation("Hello i just got here!");
+
+
+            throw new Exception("BOOM! exception has occured, OH NO!");
+
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

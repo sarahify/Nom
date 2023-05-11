@@ -1,8 +1,19 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NomRentals.Api.Data;
+using NomRentals.Api.Entities;
+using NomRentals.Api.Repository;
 using System.Text;
+using NLog;
+using NLog.Web;
+using Microsoft.Extensions.Logging;
+
+var logger =NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+
+try 
+{
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,27 +41,43 @@ builder.Services.AddAuthentication(option =>
 
 });
 
+  builder.Services.AddEndpointsApiExplorer();
+  builder.Services.AddSwaggerGen();
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<CustomerApiDbContext>(options => options.UseSqlite(builder.Configuration["ConnectionStrings:DbConnections"]));
+  builder.Services.AddDbContext<CustomerApiDbContext>(options => options.UseSqlite(builder.Configuration["ConnectionStrings:DbConnections"]));
+  builder.Services.AddIdentity<UserProfile, IdentityRole>().AddEntityFrameworkStores<CustomerApiDbContext>().AddDefaultTokenProviders();
+  builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+  var app = builder.Build();
+
+  // Configure the HTTP request pipeline.
+  if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+  app.UseHttpsRedirection();
 
-app.UseAuthorization();
-app.UseRouting();
-app.UseAuthentication();
+  app.UseAuthorization();
+  app.UseRouting();
+  app.UseAuthentication();
 
-app.MapControllers();
+  app.MapControllers();
 
-app.Run();
+  app.Run();
+}
+catch(Exception ex) 
+{
+    logger.Error(ex);
+    throw(ex);
+}
+finally 
+{
+    //Ensure to flush and stop internal timers/threads before application exist(Avoid segmentation fault on Linq)
+    NLog.LogManager.Shutdown();
+}

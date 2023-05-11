@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using NomRentals.Api.Entities;
 
 namespace NomRentals.Api.Data
 {
-    public class CustomerApiDbContext : DbContext
+    public class CustomerApiDbContext : IdentityDbContext<UserProfile>
     {
         public CustomerApiDbContext(DbContextOptions options): base(options) { }
 
@@ -14,6 +16,22 @@ namespace NomRentals.Api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            // OnModelCreatingPartial(modelBuilder);
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Name = "Administrator",
+                    NormalizedName = "ADMINISTRATOR",
+                    ConcurrencyStamp = "1"
+                },
+                new IdentityRole
+                {
+                    Name = "User",
+                    NormalizedName = "USER",
+                    ConcurrencyStamp = "2"
+                });
         }
+
+
     }
 }

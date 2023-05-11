@@ -3,6 +3,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NomRentals.Api.Data;
 using NomRentals.Api.Entities;
 using System.Security.Principal;
@@ -23,21 +24,35 @@ namespace NomRentals.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetCustomers()
-        { 
-           return Ok(await dbContext.Customers.ToListAsync()); 
+        {
+            try 
+            {
+                return Ok(await dbContext.Customers.ToListAsync());
+            }
+           catch(Exception ex) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
         }
 
         [HttpGet]
         [Route("{id:guid}")]
         public async Task<IActionResult> GetCustomer(Guid id)
         {
-          
+            try 
+            {
                 var customer = await dbContext.Customers.FindAsync(id);
                 if (customer == null)
                 {
                     return NotFound();
                 }
                 return Ok(customer);
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+                
        
         }
 
@@ -45,89 +60,130 @@ namespace NomRentals.Api.Controllers
         [Route("pagination")]
         public async Task<IActionResult> GetAllCustomer(int pageNumber) 
         {
-            if (pageNumber < 1)
+            try 
             {
-                pageNumber = 1;
+                if (pageNumber < 1)
+                {
+                    pageNumber = 1;
+                }
+                var defaultPageSize = 5f;
+                var allCustomer = await dbContext.Customers.ToListAsync();
+                var totalItems = allCustomer.Count();
+                var pagecount = Math.Ceiling(totalItems / defaultPageSize);
+                var item = allCustomer.Skip((pageNumber - 1) * (int)defaultPageSize)
+                    .Take((int)defaultPageSize).ToList();
+                var result = new
+                {
+                    totalItems = totalItems,
+                    Data = item,
+                    CurrentPage = pageNumber,
+                    PageSize = pagecount
+                };
+                return Ok(result);
             }
-            var defaultPageSize = 5f;
-            var allCustomer = await dbContext.Customers.ToListAsync();
-            var totalItems = allCustomer.Count();
-            var pagecount = Math.Ceiling(totalItems / defaultPageSize);
-            var item = allCustomer.Skip((pageNumber - 1) * (int)defaultPageSize)
-                .Take((int)defaultPageSize).ToList();
-            var result = new
+            catch(Exception ex) 
             {
-                totalItems = totalItems,
-                Data = item,
-                CurrentPage = pageNumber,
-                PageSize = pagecount
-            };
-            return Ok(result);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> AddCustomer(AddUserRequest addUserRequest) 
         {
-            var customer = new Customer()
+            try 
             {
-                Id =Guid.NewGuid(),
-                FirstName = addUserRequest.FirstName,
-                LastName = addUserRequest.LastName,
-                Email = addUserRequest.Email,
-                PhoneNumber= addUserRequest.PhoneNumber,
-                Address= addUserRequest.Address,
+                var customer = new Customer()
+                {
+                    Id = Guid.NewGuid(),
+                    FirstName = addUserRequest.FirstName,
+                    LastName = addUserRequest.LastName,
+                    Email = addUserRequest.Email,
+                    PhoneNumber = addUserRequest.PhoneNumber,
+                    Address = addUserRequest.Address,
 
-            };
-             await dbContext.Customers.AddAsync(customer);
-            await dbContext.SaveChangesAsync();
+                };
+                await dbContext.Customers.AddAsync(customer);
+                await dbContext.SaveChangesAsync();
 
-            return Ok(customer);
+                return Ok(customer);
+            }
+            catch(Exception ex) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+          
         }
 
         [HttpPut]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateCustomer(Guid id, UpdateUserRequest updateUserRequest)
         {
-            var customer = await dbContext.Customers.FindAsync(id);
-
-            if (customer != null)
+            try 
             {
-                customer.FirstName = updateUserRequest.FirstName;
-                customer.LastName = updateUserRequest.LastName;
-                customer.PhoneNumber = updateUserRequest.PhoneNumber;
-                customer.Email = updateUserRequest.Email;
-                customer.Address = updateUserRequest.Address;
+                var customer = await dbContext.Customers.FindAsync(id);
 
-                await dbContext.SaveChangesAsync();
-                return Ok(customer);
+                if (customer != null)
+                {
+                    customer.FirstName = updateUserRequest.FirstName;
+                    customer.LastName = updateUserRequest.LastName;
+                    customer.PhoneNumber = updateUserRequest.PhoneNumber;
+                    customer.Email = updateUserRequest.Email;
+                    customer.Address = updateUserRequest.Address;
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(customer);
+                }
+
+                return NotFound();
             }
+            catch(Exception ex) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
 
-            return NotFound();
+            }
+          
         }
         [HttpDelete]
         [Route("{id:guid}")]
         public async Task<IActionResult> DeleteCustomer(Guid id)
         {
-            var customer = await dbContext.Customers.FindAsync(id);
-            if (customer != null)
+            try 
             {
-                dbContext.Remove(customer);
-                await dbContext.SaveChangesAsync();
-                return Ok(customer);
+                var customer = await dbContext.Customers.FindAsync(id);
+                if (customer != null)
+                {
+                    dbContext.Remove(customer);
+                    await dbContext.SaveChangesAsync();
+                    return Ok(customer);
 
+                }
+                return NotFound();
             }
-            return NotFound();
+            catch(Exception ex) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
         }
         [HttpGet]
         [Route("Search")]
         public async Task<IActionResult> SearchCustomer(string? email, string? username) 
         {
-            var customer = await dbContext.Customers.FindAsync(email, username);
-            return NotFound();  
+            try 
+            {
+                var customer = await dbContext.Customers.FindAsync(email, username);
+                
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+            }
+            return NotFound();
+            
+            
         }
 
 
-        [HttpPatch("Resume")]
+        [HttpPatch("Photo")]
         public async Task<IActionResult> UploadPhoto2(IFormFile file, Guid id)
         {
             var findCustomer = await dbContext.Customers.FindAsync(id);
