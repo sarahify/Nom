@@ -45,17 +45,66 @@ namespace NomRentals.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e760154f-b9c0-4366-af8c-47359524e7ab",
+                            Id = "063962fc-12dc-4809-a444-df85341b0359",
                             ConcurrencyStamp = "1",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "02aa13be-6ef9-43e0-9b23-900cf99f2c04",
+                            Id = "20bc9193-a4c0-43e1-8d14-6b48d05db55a",
                             ConcurrencyStamp = "2",
+                            Name = "Facilitator",
+                            NormalizedName = "FACILITATOR"
+                        },
+                        new
+                        {
+                            Id = "3d3ee3bf-c968-4a62-8b71-bd5722bb8bc3",
+                            ConcurrencyStamp = "3",
                             Name = "User",
                             NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "a1e50baf-812b-4df1-be0f-a914f2976f93",
+                            ConcurrencyStamp = "4",
+                            Name = "Cook",
+                            NormalizedName = "COOK"
+                        },
+                        new
+                        {
+                            Id = "210022c2-8c5a-4405-8b3b-a307ba765e1c",
+                            ConcurrencyStamp = "5",
+                            Name = "ServicesBoy",
+                            NormalizedName = "SERVICESBOY"
+                        },
+                        new
+                        {
+                            Id = "881cfde7-0a1b-49f1-9867-1240be39485b",
+                            ConcurrencyStamp = "6",
+                            Name = "SmallChops",
+                            NormalizedName = "SMALLCHOPS"
+                        },
+                        new
+                        {
+                            Id = "19a3d0fe-44e8-4231-af3b-f0b28b5a8312",
+                            ConcurrencyStamp = "7",
+                            Name = "Decorations",
+                            NormalizedName = "DECORATIONS"
+                        },
+                        new
+                        {
+                            Id = "571e7368-fec1-4993-b7b0-ab8faf9f22d3",
+                            ConcurrencyStamp = "8",
+                            Name = "Drinks",
+                            NormalizedName = "DRINKS"
+                        },
+                        new
+                        {
+                            Id = "5a38f78d-d390-4a93-af1d-7a93ecd96c2c",
+                            ConcurrencyStamp = "9",
+                            Name = "Cakes",
+                            NormalizedName = "CAKES"
                         });
                 });
 
@@ -161,56 +210,21 @@ namespace NomRentals.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("NomRentals.Api.Entities.Cook", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MiddleName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cooks");
-                });
-
             modelBuilder.Entity("NomRentals.Api.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HomeAddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -231,21 +245,27 @@ namespace NomRentals.Api.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("NomRentals.Api.Entities.ServiceBoy", b =>
+            modelBuilder.Entity("NomRentals.Api.Entities.Employee", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("EmployeeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("HomeAddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -257,9 +277,13 @@ namespace NomRentals.Api.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.Property<string>("PhotoPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("ServiceBoys");
+                    b.HasKey("EmployeeId");
+
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("NomRentals.Api.Entities.UserProfile", b =>
@@ -332,6 +356,45 @@ namespace NomRentals.Api.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("NomRentals.Api.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTime?>("ResetTokenExpires")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("VerificationToken")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("VerifiedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

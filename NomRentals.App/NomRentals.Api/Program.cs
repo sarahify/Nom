@@ -9,6 +9,8 @@ using System.Text;
 using NLog;
 using NLog.Web;
 using Microsoft.Extensions.Logging;
+using NomRentals.Api.Services.EmailService;
+
 
 var logger =NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
@@ -21,6 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddAuthentication(option =>
 {
     option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,7 +52,13 @@ builder.Services.AddAuthentication(option =>
 
   builder.Services.AddDbContext<CustomerApiDbContext>(options => options.UseSqlite(builder.Configuration["ConnectionStrings:DbConnections"]));
   builder.Services.AddIdentity<UserProfile, IdentityRole>().AddEntityFrameworkStores<CustomerApiDbContext>().AddDefaultTokenProviders();
+
+    builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+    options.TokenLifespan = TimeSpan.FromHours(10));
+
   builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+    builder.Services.AddScoped<IEmailService, EmailService>(); 
+ 
 
 
   var app = builder.Build();

@@ -99,7 +99,7 @@ namespace NomRentals.Api.Controllers
                     LastName = addUserRequest.LastName,
                     Email = addUserRequest.Email,
                     PhoneNumber = addUserRequest.PhoneNumber,
-                    Address = addUserRequest.Address,
+                    HomeAddress = addUserRequest.HomeAddress,
 
                 };
                 await dbContext.Customers.AddAsync(customer);
@@ -128,7 +128,7 @@ namespace NomRentals.Api.Controllers
                     customer.LastName = updateUserRequest.LastName;
                     customer.PhoneNumber = updateUserRequest.PhoneNumber;
                     customer.Email = updateUserRequest.Email;
-                    customer.Address = updateUserRequest.Address;
+                    customer.HomeAddress = updateUserRequest.HomeAddress;
 
                     await dbContext.SaveChangesAsync();
                     return Ok(customer);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using NomRentals.Api.Entities;
 
 namespace NomRentals.Api.Repository
@@ -7,5 +8,6 @@ namespace NomRentals.Api.Repository
     {
         Task<IdentityResult> SignUpAsync(SignUp signUp, string role);
         Task<string> LoginAsync(SignInModel signIn);
+        
     }
 }

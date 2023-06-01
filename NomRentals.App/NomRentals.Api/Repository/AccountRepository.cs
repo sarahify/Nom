@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using NomRentals.Api.Entities;
+using NomRentals.Api.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -23,6 +25,8 @@ namespace NomRentals.Api.Repository
             _configuration = configuration ?? throw new ArgumentNullException();
             _roleManager = roleManager;
         }
+
+
         public async Task<string> LoginAsync(SignInModel signIn)
         {
             var findemail = await _userManager.FindByEmailAsync(signIn.Email);
@@ -75,7 +79,7 @@ namespace NomRentals.Api.Repository
                     FirstName = signUp.FirstName,
                     LastName = signUp.LastName,
                     Email = signUp.Email,
-                    UserName = signUp.Email
+                    
                 };
                 var result = await _userManager.CreateAsync(user, signUp.Password);
                 if (!result.Succeeded)

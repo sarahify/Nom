@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NomRentals.Api.Entities;
 using NomRentals.Api.Repository;
@@ -14,8 +15,8 @@ namespace NomRentals.Api.Controllers
         {
             _accountRepository = accountRepository;
         }
-        [HttpPost("signup")]
-        public async Task<IActionResult> SignUp([FromBody] SignUp signUp, string role)
+        [HttpPost("sign-up")]
+        public async Task<IActionResult> SignUp(SignUp signUp, string role)
         {
             try
             {
@@ -32,7 +33,7 @@ namespace NomRentals.Api.Controllers
             }
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] SignInModel signInModel)
+        public async Task<IActionResult> Login(SignInModel signInModel)
         {
             try
             {
@@ -48,5 +49,7 @@ namespace NomRentals.Api.Controllers
                 return Unauthorized(ex.Message);
             }
         }
+       
+        
     }
 }
